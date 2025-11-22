@@ -63,7 +63,7 @@
       return w;
     }
 
-    // Normalization heuristics
+    // Smarter normalization heuristics
     function normalizeWord(w) {
       // reverse diphthongs
       Object.entries(revVowelMap).forEach(([k,v])=>{
@@ -79,13 +79,18 @@
       // collapse doubled consonants
       w=w.replace(/([bcdfghjklmnpqrstvwxyz])\1+/g,"$1");
 
-      // heuristic recombination
-      w=w.replace(/\bse\b/,"see");
-      w=w.replace(/\bprope\b.*rly\b/,"properly");
-      w=w.replace(/\bwil\b/,"will");
-      w=w.replace(/\bfal\b/,"fall");
-      w=w.replace(/\bous\b/,"our");
-      w=w.replace(/\bkhur\b/,"your");
+      // remove stray "of" fragments
+      w=w.replace(/\bof\b/g,"");
+
+      // heuristic fixes for common words
+      if(w==="beter") w="better";
+      if(w==="wourk" || w==="wor") w="work";
+      if(w==="suck" || w==="suck s") w="sucks";
+      if(w==="copiliot") w="copilot";
+      if(w==="wil") w="will";
+      if(w==="fal") w="fall";
+      if(w==="ous") w="our";
+      if(w==="khur") w="your";
 
       return w;
     }
