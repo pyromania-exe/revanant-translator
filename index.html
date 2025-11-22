@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Revanant Code Translator</title>
+  <style>
+    body { background:#0d0d0d; color:#e0e0e0; font-family:monospace; padding:2rem; line-height:1.6; }
+    h1 { color:#7c4dff; }
+    select, textarea, button {
+      font-family:monospace; font-size:1rem; border-radius:6px; padding:.6rem;
+    }
+    select, textarea { background:#1a1a1a; color:#e0e0e0; border:none; }
+    textarea { width:100%; min-height:120px; margin-top:.5rem; }
+    button { margin-top:1rem; background:#7c4dff; color:white; border:none; font-weight:bold; cursor:pointer; }
+    pre { margin-top:1rem; background:#111; padding:1rem; border-radius:6px; white-space:pre-wrap; }
+    .section { margin-top:2rem; padding:1rem; background:#1a1a1a; border-radius:8px; }
+    code { background:#222; padding:2px 4px; border-radius:4px; color:#3ddc97; }
+  </style>
+</head>
+<body>
+  <h1>Revanant Code Translator</h1>
+  <label for="mode">Choose Mode:</label>
+  <select id="mode">
+    <option value="englishToRevan">English → Revanant</option>
+    <option value="revanToEnglish">Revanant → English</option>
+  </select>
+
+  <textarea id="input" placeholder="Type text here..."></textarea>
+  <button id="translateBtn">Translate</button>
+  <pre id="output"></pre>
+
+  <!-- Rules/info section -->
+  <div class="section">
+    <h2>Revanant Code – Rules</h2>
+    <h3>Word Order</h3>
+    <ul><li>OVS (Object–Verb–Subject). Example: <code>Book read I</code>.</li></ul>
+    <h3>Pronouns</h3>
+    <ul><li><code>ra</code> → I</li><li><code>vi</code> → You</li><li><code>tor</code> → We</li><li><code>zen</code> → They/He/She/It</li></ul>
+    <h3>Tense & Negation</h3>
+    <ul><li>Past: <code>-eth</code></li><li>Future: <code>va-</code></li><li>Negation: <code>x-</code></li></ul>
+    <h3>Modifiers</h3>
+    <ul><li>Adjectives follow nouns with vowel shift (a→u, e→i, i→o, o→a, u→e).</li></ul>
+    <h3>Pluralization</h3>
+    <ul><li>Double first consonant: <code>dog</code> → <code>ddog</code>.</li></ul>
+    <h3>Markers</h3>
+    <ul><li><code>¤</code> sentence divider</li><li><code>~</code> emphasis</li><li><code>:</code> possession</li><li><code>//</code> uncertainty</li></ul>
+    <h3>Examples</h3>
+    <ul>
+      <li><code>Gate va-guard ra¤</code> → I will guard the gate.</li>
+      <li><code>Truth x-speaketh zen¤</code> → They did not speak truth.</li>
+      <li><code>Path walk vi¤</code> → You walk the path.</li>
+      <li><code>Banner radu claim tor¤</code> → We claim the red banner.</li>
+    </ul>
+  </div>
+
+  <script>
+    // Pronoun maps
+    const pronouns = { "i":"ra","you":"vi","we":"tor","they":"zen","he":"zen","she":"zen","it":"zen" };
+    const revPronouns = { "ra":"I","vi":"You","tor":"We","zen":"They" };
+
+    // Vowel maps
+    const vowelMap = { a:"u", e:"i", i:"o", o:"a", u:"e" };
+    const revVowelMap = { u:"a", i:"e", o:"i", a:"o", e:"u" };
+
+    function scrambleWord(word) {
+      return word.split("").map(ch => vowelMap[ch]||ch).join("");
+    }
+    function descrambleWord(word) {
+      return word.replace(/[aeiou]/g, v => revVowelMap[v]||v).replace(/([bcdfghjklmnpqrstvwxyz])\1+/g,"$1");
+    }
+
+    function englishToRevan(line) {
+      const words=line.toLowerCase().split(/\s+/);
+      if(words.length<2) return "";
+      let subject=words[0], verb=words[1], object=words.slice(2).join(" ");
+      if(pronouns[subject]) subject=pronouns[subject];
+      verb=scrambleWord(verb);
+      object=object.split(" ").map(scrambleWord).join(" ");
+      if(Math.random()>0.5) verb="va-"+verb; else verb=verb+"eth";
+      if(Math.random()>0.6) verb="x-"+verb;
+      const markers=["¤","~",":","//"];
+      const marker=markers[Math.floor(Math.random()*markers.length)];
+      return `${object} ${verb} ${subject}${marker}`;
+    }
+
+    function revanToEnglish(line) {
+      line=line.replace(/[¤~:\/]+$/g,"").trim().replace(/:/g," of ");
+      const words=line.split(/\s+/);
+      if(words.length<3) return words.map(descrambleWord).join(" ");
+      const objectTokens=words.slice(0,words.length-2);
+      let verbToken=words[words.length-2];
+      let subjectToken=words[words.length-1];
+      let subject=revPronouns[subjectToken]||descrambleWord(subjectToken);
+      let verb=verbToken.replace(/^va-/,"").replace(/^x-/,"").replace(/eth$/,"");
+      verb=descrambleWord(verb);
+      const object=objectTokens.map(descrambleWord).join(" ");
+      return `${subject} ${verb} ${object}`;
+    }
+
+    document.getElementById("translateBtn").addEventListener("click",()=>{
+      const mode=document.getElementById("mode").value;
+      const input=document.getElementById("input").value.trim();
+      const lines=input.split(/\n+/);
+      let out="";
+      if(mode==="englishToRevan") out=lines.map(englishToRevan).join("\n");
+      else out=lines.map(revanToEnglish).join("\n");
+      document.getElementById("output").textContent=out;
+    });
+  </script>
+</body>
+</html>
