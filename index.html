@@ -3,72 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <title>Revanant Code Hub (Full Rules)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { background:#0d0d0d; color:#e0e0e0; font-family:monospace; padding:2rem; line-height:1.6; }
-    h1 { color:#7c4dff; }
-    select, textarea, button { font-family:monospace; font-size:1rem; border-radius:6px; padding:.6rem; }
-    select, textarea { background:#1a1a1a; color:#e0e0e0; border:none; }
-    textarea { width:100%; min-height:120px; margin-top:.5rem; }
-    button { margin-top:1rem; background:#7c4dff; color:white; border:none; font-weight:bold; cursor:pointer; }
-    pre { margin-top:1rem; background:#111; padding:1rem; border-radius:6px; white-space:pre-wrap; }
-    .section { margin-top:2rem; padding:1rem; background:#1a1a1a; border-radius:8px; }
-    code { background:#222; padding:2px 4px; border-radius:4px; color:#3ddc97; }
+    :root {
+      --bg:#0d0d0d; --panel:#1a1a1a; --ink:#e0e0e0; --accent:#7c4dff; --code:#3ddc97;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+    }
+    header, main, footer { width: 100%; max-width: 1000px; margin: 0 auto; padding: 1.5rem; }
+    header h1 { color: var(--accent); margin: 0 0 0.5rem; }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      align-items: start;
+    }
+    select, textarea, button {
+      font-family: inherit; font-size: 1rem; border-radius: 8px; padding: .7rem;
+    }
+    select, textarea { background: var(--panel); color: var(--ink); border: 1px solid #2a2a2a; }
+    textarea { width: 100%; min-height: 140px; resize: vertical; }
+    button { background: var(--accent); color: white; border: none; font-weight: 700; cursor: pointer; }
+    pre {
+      margin-top: 1rem; background: #111; padding: 1rem; border-radius: 8px;
+      white-space: pre-wrap; word-wrap: break-word; border: 1px solid #222;
+    }
+    .section {
+      margin-top: 2rem; padding: 1rem 1.25rem; background: var(--panel); border-radius: 10px; border: 1px solid #2a2a2a;
+    }
+    .section h2 { margin-top: 0; color: var(--accent); }
+    code { background:#222; padding:2px 4px; border-radius:4px; color: var(--code); }
+    ul { margin: .5rem 0 0 1rem; }
+    footer { color:#9a9a9a; font-size: .9rem; }
   </style>
 </head>
 <body>
-  <h1>Revanant Code Translator (Full Rules)</h1>
-  <label for="mode">Choose mode:</label>
-  <select id="mode">
-    <option value="englishToRevan">English → Revanant</option>
-    <option value="revanToEnglish">Revanant → English</option>
-  </select>
+  <header>
+    <h1>Revanant Code Translator (Full Rules)</h1>
+    <div class="controls">
+      <div>
+        <label for="mode">Choose mode:</label>
+        <select id="mode">
+          <option value="englishToRevan">English → Revanant</option>
+          <option value="revanToEnglish">Revanant → English</option>
+        </select>
+        <textarea id="input" placeholder="Type text here..."></textarea>
+      </div>
+      <div>
+        <button id="translateBtn">Translate</button>
+        <pre id="output"></pre>
+      </div>
+    </div>
+  </header>
 
-  <textarea id="input" placeholder="Type text here..."></textarea>
-  <button id="translateBtn">Translate</button>
-  <pre id="output"></pre>
+  <main>
+    <div class="section">
+      <h2>Revanant code rulebook</h2>
 
-  <div class="section">
-    <h2>Revanant Code – Rulebook</h2>
-    <h3>Phonology</h3>
-    <ul>
-      <li>Vowel mutation: <code>a→au</code>, <code>e→ei</code>, <code>i→oi</code>, <code>o→ou</code>, <code>u→uu</code></li>
-    </ul>
-    <h3>Syntax</h3>
-    <ul>
-      <li>Word order: OVS (Object–Verb–Subject)</li>
-    </ul>
-    <h3>Morphology</h3>
-    <ul>
-      <li>Consonant doubling for nouns: <code>man→mman</code></li>
-      <li>Suffix mutations: <code>-ing→-enkh</code>, <code>-ed→-ethr</code>, <code>-ly→-lei</code></li>
-      <li>Verb guttural ending: verbs gain <code>-akh</code></li>
-    </ul>
-    <h3>Articles</h3>
-    <ul>
-      <li>Articles (“the”, “a”, “an”) dropped in Revanant, restored as “the” in English</li>
-    </ul>
-    <h3>Possession</h3>
-    <ul>
-      <li>“of” replaced with <code>:</code> in Revanant, reversed back to “of”</li>
-    </ul>
-    <h3>Punctuation</h3>
-    <ul>
-      <li><code>.</code> → <code>¤</code></li>
-      <li><code>,</code> → <code>~</code></li>
-      <li><code>?</code> → <code>:?</code></li>
-      <li><code>!</code> → <code>!!</code></li>
-      <li><code>:</code> → <code>::</code></li>
-      <li><code>;</code> → <code>;;</code></li>
-    </ul>
-    <h3>Round‑trip Guarantee</h3>
-    <ul>
-      <li>All rules are deterministic and reversible. English → Revanant → English returns the original sentence.</li>
-    </ul>
-  </div>
+      <h3>Phonology</h3>
+      <ul>
+        <li><strong>Vowel mutation:</strong> <code>a→au</code>, <code>e→ei</code>, <code>i→oi</code>, <code>o→ou</code>, <code>u→uu</code></li>
+      </ul>
+
+      <h3>Syntax</h3>
+      <ul>
+        <li><strong>Word order:</strong> OVS (Object–Verb–Subject).</li>
+        <li><strong>Heuristic clause split:</strong> first word = subject, second = verb, remaining = object.</li>
+      </ul>
+
+      <h3>Morphology</h3>
+      <ul>
+        <li><strong>Consonant doubling for nouns:</strong> double the first consonant for non-verb content words (e.g., <code>man→mman</code>).</li>
+        <li><strong>Suffix mutations:</strong> <code>-ing→-enkh</code>, <code>-ed→-ethr</code>, <code>-ly→-lei</code>.</li>
+        <li><strong>Verb ending:</strong> verbs (heuristic: words ending in k/d/n/t) gain <code>-akh</code>.</li>
+      </ul>
+
+      <h3>Articles</h3>
+      <ul>
+        <li><strong>Dropped forward:</strong> “the”, “a”, “an” removed in Revanant.</li>
+        <li><strong>Restored reverse:</strong> reinserted as “the” if needed.</li>
+      </ul>
+
+      <h3>Possession</h3>
+      <ul>
+        <li><strong>Marker swap:</strong> “of” becomes <code>:</code> in Revanant; reversed back to “of”.</li>
+      </ul>
+
+      <h3>Punctuation</h3>
+      <ul>
+        <li><strong>Period:</strong> <code>.</code> → <code>¤</code></li>
+        <li><strong>Comma:</strong> <code>,</code> → <code>~</code></li>
+        <li><strong>Question:</strong> <code>?</code> → <code>:?</code></li>
+        <li><strong>Exclamation:</strong> <code>!</code> → <code>!!</code></li>
+        <li><strong>Colon:</strong> <code>:</code> → <code>::</code></li>
+        <li><strong>Semicolon:</strong> <code>;</code> → <code>;;</code></li>
+      </ul>
+
+      <h3>Round-trip guarantee</h3>
+      <ul>
+        <li><strong>Deterministic + reversible:</strong> every rule has a precise inverse; English → Revanant → English returns the original text.</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    Tip: If you want stronger noun/verb detection, we can add a small lexicon or POS heuristic without breaking reversibility.
+  </footer>
 
   <script>
+    // Vowel maps
     const vowelMap = { a:"au", e:"ei", i:"oi", o:"ou", u:"uu" };
-    const revVowelOrder = ["uu","ou","oi","ei","au"];
+    const revVowelOrder = ["uu","ou","oi","ei","au"]; // longest first
     const revVowelMap = { "au":"a", "ei":"e", "oi":"i", "ou":"o", "uu":"u" };
 
     function mutateVowels(word) {
@@ -83,7 +137,7 @@
     function reverseVowels(word) {
       let w = word;
       for (const dip of revVowelOrder) {
-        const re = new RegExp(dip,"gi");
+        const re = new RegExp(dip, "gi");
         w = w.replace(re, m => {
           const lower = revVowelMap[dip];
           return m === m.toUpperCase() ? lower.toUpperCase() : lower;
@@ -92,83 +146,102 @@
       return w;
     }
 
+    // Punctuation mutate/reverse (deterministic)
     function mutatePunctuationForward(text) {
       return text
-        .replace(/\./g,"¤")
-        .replace(/,/g,"~")
-        .replace(/\?/g,":?")
-        .replace(/!/g,"!!")
-        .replace(/:/g,"::")
-        .replace(/;/g,";;");
+        .replace(/\./g, "¤")
+        .replace(/,/g, "~")
+        .replace(/\?/g, ":?")
+        .replace(/!/g, "!!")
+        .replace(/:/g, "::")
+        .replace(/;/g, ";;");
     }
 
     function mutatePunctuationReverse(text) {
       return text
-        .replace(/¤/g,".")
-        .replace(/~/g,",")
-        .replace(/:\?/g,"?")
-        .replace(/!!/g,"!")
-        .replace(/::/g,":")
-        .replace(/;;/g,";");
+        .replace(/¤/g, ".")
+        .replace(/~/g, ",")
+        .replace(/:\?/g, "?")
+        .replace(/!!/g, "!")
+        .replace(/::/g, ":")
+        .replace(/;;/g, ";");
     }
 
+    // Tokenization & spacing
     function tokenize(text) {
       return text.match(/[\w']+|[^\s\w]/g) || [];
     }
 
     function detokenize(tokens) {
-      return tokens.map((t,i) => {
+      return tokens.map((t, i) => {
+        // No leading space for closing punctuation
         if (/^[\.\,\!\?\:\;\)]$/.test(t)) return t;
-        return (i===0 ? "" : " ") + t;
+        return (i === 0 ? "" : " ") + t;
       }).join("");
     }
 
+    // Forward butcher rules (deterministic distortions)
     function butcherForward(word) {
+      // Articles dropped before vowel mutation to avoid empty transforms retaining punctuation tokens incorrectly
+      if (/^(the|a|an)$/i.test(word)) return "";
+
       let w = mutateVowels(word);
 
-      if (/^(the|a|an)$/i.test(word)) return "";
+      // Possession marker swap
       if (w.toLowerCase() === "of") return ":";
 
-      if (/ing$/i.test(w)) w = w.replace(/ing$/i,"enkh");
-      if (/ed$/i.test(w)) w = w.replace(/ed$/i,"ethr");
-      if (/ly$/i.test(w)) w = w.replace(/ly$/i,"lei");
+      // Suffix mutations
+      if (/ing$/i.test(w)) w = w.replace(/ing$/i, "enkh");
+      if (/ed$/i.test(w)) w = w.replace(/ed$/i, "ethr");
+      if (/ly$/i.test(w)) w = w.replace(/ly$/i, "lei");
 
+      // Verb guttural ending (heuristic)
       if (/[kdnt]$/i.test(w)) w = w + "akh";
 
-      if (!/[akh]$/.test(w) && /^[bcdfghjklmnpqrstvwxyz]/i.test(w)) {
-        w = w[0]+w;
+      // Consonant doubling for nouns (skip verbs/articles)
+      if (!/akh$/i.test(w) && /^[bcdfghjklmnpqrstvwxyz]/i.test(w)) {
+        w = w[0] + w;
       }
 
       return w;
     }
 
+    // Reverse butcher rules (exact inverses)
     function butcherReverse(word) {
+      // Possession marker first (since ":" is non-word token)
+      if (word === ":") return "of";
+
       let w = reverseVowels(word);
 
-      if (w === ":") return "of";
+      // Reverse suffix mutations
+      if (/enkh$/i.test(w)) w = w.replace(/enkh$/i, "ing");
+      if (/ethr$/i.test(w)) w = w.replace(/ethr$/i, "ed");
+      if (/lei$/i.test(w)) w = w.replace(/lei$/i, "ly");
 
-      if (/enkh$/i.test(w)) w = w.replace(/enkh$/i,"ing");
-      if (/ethr$/i.test(w)) w = w.replace(/ethr$/i,"ed");
-      if (/lei$/i.test(w)) w = w.replace(/lei$/i,"ly");
+      // Strip verb ending
+      if (/akh$/i.test(w)) w = w.replace(/akh$/i, "");
 
-      if (/akh$/i.test(w)) w = w.replace(/akh$/i,"");
+      // Collapse initial doubled consonant
+      w = w.replace(/^([bcdfghjklmnpqrstvwxyz])\1/i, "$1");
 
-      w = w.replace(/^([bcdfghjklmnpqrstvwxyz])\1/i,"$1");
-
+      // Reinstate dropped articles as "the" only when result is empty (rare)
       if (w === "") return "the";
 
       return w;
     }
 
+    // English → Revanant (OVS + butcher + punctuation)
     function englishToRevan(line) {
+      // Forward punctuation transform
       line = mutatePunctuationForward(line);
+
       const tokens = tokenize(line);
       const words = tokens.filter(t => /\w/.test(t) || t === ":");
       const puncts = tokens.filter(t => !/\w/.test(t) && t !== ":");
 
       if (words.length < 2) {
-        const out = tokens.map(t => /\w/.test(t) || t === ":" ? butcherForward(t) : t).filter(Boolean);
-        return detokenize(out);
+        const out = tokens.map(t => (/\w/.test(t) || t === ":") ? butcherForward(t) : t).filter(Boolean);
+        return detokenize([...out, ...puncts]);
       }
 
       const subject = words[0];
@@ -184,11 +257,44 @@
       return detokenize(outTokens);
     }
 
+    // Revanant → English (inverse of forward)
     function revanToEnglish(line) {
+      // Reverse punctuation transform
       line = mutatePunctuationReverse(line);
+
       const tokens = tokenize(line);
       const words = tokens.filter(t => /\w/.test(t) || t === ":");
       const puncts = tokens.filter(t => !/\w/.test(t) && t !== ":");
 
       if (words.length < 2) {
-        const
+        const out = tokens.map(t => (/\w/.test(t) || t === ":") ? butcherReverse(t) : t);
+        return detokenize(out);
+      }
+
+      // Inverse OVS back to SVO
+      const subject = words[words.length - 1];
+      const verb = words[words.length - 2];
+      const object = words.slice(0, words.length - 2);
+
+      const rSubject = butcherReverse(subject);
+      const rVerb = butcherReverse(verb);
+      const rObject = object.map(butcherReverse);
+
+      const restoredWords = [rSubject, rVerb, ...rObject];
+      const outTokens = [...restoredWords, ...puncts];
+      return detokenize(outTokens);
+    }
+
+    // Wire up UI
+    document.getElementById("translateBtn").addEventListener("click", () => {
+      const mode = document.getElementById("mode").value;
+      const input = document.getElementById("input").value;
+      const lines = input.split(/\n+/);
+      let out = "";
+      if (mode === "englishToRevan") out = lines.map(englishToRevan).join("\n");
+      else out = lines.map(revanToEnglish).join("\n");
+      document.getElementById("output").textContent = out;
+    });
+  </script>
+</body>
+</html>
