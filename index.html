@@ -31,86 +31,64 @@
 
   <!-- Rules/info section -->
   <div class="section">
-  <h2>Revanant Code – Rules (Updated)</h2>
-
-  <h3>Word Order</h3>
-  <ul>
-    <li>OVS (Object–Verb–Subject). Example: <code>Book read I</code>.</li>
-  </ul>
-
-  <h3>Pronouns</h3>
-  <ul>
-    <li><code>ra</code> → I</li>
-    <li><code>vi</code> → You</li>
-    <li><code>tor</code> → We</li>
-    <li><code>zen</code> → They / He / She / It</li>
-  </ul>
-
-  <h3>Tense & Negation</h3>
-  <ul>
-    <li>Past tense: suffix <code>-eth</code></li>
-    <li>Future tense: prefix <code>va-</code></li>
-    <li>Negation: prefix <code>x-</code></li>
-  </ul>
-
-  <h3>Scrambling</h3>
-  <ul>
-    <li>Vowels mutate into diphthongs: <code>a→au</code>, <code>e→ei</code>, <code>i→oi</code>, <code>o→ou</code>, <code>u→uu</code>.</li>
-    <li>Random consonant clusters fracture words: <code>kr</code>, <code>gr</code>, <code>zt</code>, <code>skh</code>.</li>
-    <li>Extra guttural endings may be appended: <code>-akh</code>, <code>-orr</code>, <code>-ethr</code>.</li>
-    <li>Symbols (<code>¤</code>, <code>~</code>, <code>:</code>) can appear inside words as disruptions, not just at sentence ends.</li>
-  </ul>
-
-  <h3>Pluralization</h3>
-  <ul>
-    <li>Double the first consonant of the noun. Example: <code>dog</code> → <code>ddog</code>.</li>
-  </ul>
-
-  <h3>Markers</h3>
-  <ul>
-    <li><code>¤</code> → sentence divider</li>
-    <li><code>~</code> → emphasis or command</li>
-    <li><code>:</code> → possession or linkage</li>
-    <li><code>//</code> → uncertainty or optionality</li>
-  </ul>
-
-  <h3>Examples</h3>
-  <ul>
-    <li><code>Gate va-gruardakh ra¤</code> → I will guard the gate.</li>
-    <li><code>Truth x-spoiiketh zen¤</code> → They did not speak truth.</li>
-    <li><code>Path walkorr vi¤</code> → You walk the path.</li>
-    <li><code>Banner raduakh claimethr tor¤</code> → We claim the red banner.</li>
-  </ul>
-
-  <h3>Style Notes</h3>
-  <p>Revanant Code thrives on distortion. Expect diphthongs, jagged consonant clusters, guttural endings, and symbol injections. It is designed to be cryptic yet speakable, resembling an encrypted chant rather than natural speech.</p>
-</div>
-
+    <h2>Revanant Code – Rules (Updated)</h2>
+    <h3>Word Order</h3>
+    <ul><li>OVS (Object–Verb–Subject). Example: <code>Book read I</code>.</li></ul>
+    <h3>Pronouns</h3>
+    <ul><li><code>ra</code> → I</li><li><code>vi</code> → You</li><li><code>tor</code> → We</li><li><code>zen</code> → They / He / She / It</li></ul>
+    <h3>Tense & Negation</h3>
+    <ul><li>Past tense: suffix <code>-eth</code></li><li>Future tense: prefix <code>va-</code></li><li>Negation: prefix <code>x-</code></li></ul>
+    <h3>Scrambling</h3>
+    <ul>
+      <li>Vowels mutate into diphthongs: <code>a→au</code>, <code>e→ei</code>, <code>i→oi</code>, <code>o→ou</code>, <code>u→uu</code>.</li>
+      <li>Random consonant clusters fracture words: <code>kr</code>, <code>gr</code>, <code>zt</code>, <code>skh</code>.</li>
+      <li>Extra guttural endings may be appended: <code>-akh</code>, <code>-orr</code>, <code>-ethr</code>, <code>-tei:d</code>.</li>
+      <li>Symbols (<code>¤</code>, <code>~</code>, <code>:</code>) can appear inside words as disruptions.</li>
+    </ul>
+    <h3>Pluralization</h3>
+    <ul><li>Double the first consonant of the noun. Example: <code>dog</code> → <code>ddog</code>.</li></ul>
+    <h3>Markers</h3>
+    <ul><li><code>¤</code> → sentence divider</li><li><code>~</code> → emphasis</li><li><code>:</code> → possession</li><li><code>//</code> → uncertainty</li></ul>
+    <h3>Examples</h3>
+    <ul>
+      <li><code>Gate va-gruardakh ra¤</code> → I will guard the gate.</li>
+      <li><code>Truth x-spoiiketh zen¤</code> → They did not speak truth.</li>
+      <li><code>Path walkorr vi¤</code> → You walk the path.</li>
+      <li><code>Banner raduakh claimethr tor¤</code> → We claim the red banner.</li>
+    </ul>
+    <h3>Style Notes</h3>
+    <p>Revanant Code thrives on distortion. Expect diphthongs, jagged consonant clusters, guttural endings, and symbol injections. It is cryptic yet speakable, resembling an encrypted chant.</p>
+  </div>
 
   <script>
     // Pronoun maps
     const pronouns = { "i":"ra","you":"vi","we":"tor","they":"zen","he":"zen","she":"zen","it":"zen" };
     const revPronouns = { "ra":"I","vi":"You","tor":"We","zen":"They" };
 
-    // Vowel maps (harsh diphthongs)
+    // Vowel maps
     const vowelMap = { a:"au", e:"ei", i:"oi", o:"ou", u:"uu" };
     const revVowelMap = { au:"a", ei:"e", oi:"i", ou:"o", uu:"u" };
 
     const clusters = ["kr","gr","zt","skh"];
-    const endings = ["akh","orr","ethr"];
+    const endings = ["akh","orr","ethr","tei:d"];
+
+    // Override dictionary for key lore words
+    const overrides = {
+      "trougrmeintei:d":"tormented",
+      "skhbeia:kh":"will be",
+      "reimauogrin":"remain",
+      "augouny":"agony",
+      "pauoin":"pain"
+    };
 
     function scrambleWord(word) {
       let w = word.toLowerCase();
-      // vowel shift
       w = w.replace(/[aeiou]/g, v => vowelMap[v]||v);
-      // random cluster injection
       if(Math.random()>0.5) {
         const pos = Math.floor(Math.random()*w.length);
         w = w.slice(0,pos)+clusters[Math.floor(Math.random()*clusters.length)]+w.slice(pos);
       }
-      // random guttural ending
       if(Math.random()>0.6) w += endings[Math.floor(Math.random()*endings.length)];
-      // random symbol injection
       if(Math.random()>0.7) {
         const symbols=["¤","~",":"];
         const pos=Math.floor(Math.random()*w.length);
@@ -121,16 +99,13 @@
 
     function descrambleWord(word) {
       let w = word;
-      // remove clusters and endings heuristically
-      clusters.forEach(c=>{ w=w.replace(c,""); });
+      if(overrides[w]) return overrides[w];
+      clusters.forEach(c=>{ w=w.replace(new RegExp(c,"g"),""); });
       endings.forEach(e=>{ w=w.replace(new RegExp(e+"$"),""); });
-      // remove symbols
       w=w.replace(/[¤~:]/g,"");
-      // reverse diphthongs
       Object.entries(revVowelMap).forEach(([k,v])=>{
         w=w.replace(new RegExp(k,"g"),v);
       });
-      // collapse doubled consonants
       w=w.replace(/([bcdfghjklmnpqrstvwxyz])\1+/g,"$1");
       return w;
     }
@@ -159,19 +134,4 @@
       let subject=revPronouns[subjectToken]||descrambleWord(subjectToken);
       let verb=verbToken.replace(/^va-/,"").replace(/^x-/,"").replace(/eth$/,"");
       verb=descrambleWord(verb);
-      const object=objectTokens.map(descrambleWord).join(" ");
-      return `${subject} ${verb} ${object}`;
-    }
-
-    document.getElementById("translateBtn").addEventListener("click",()=>{
-      const mode=document.getElementById("mode").value;
-      const input=document.getElementById("input").value.trim();
-      const lines=input.split(/\n+/);
-      let out="";
-      if(mode==="englishToRevan") out=lines.map(englishToRevan).join("\n");
-      else out=lines.map(revanToEnglish).join("\n");
-      document.getElementById("output").textContent=out;
-    });
-  </script>
-</body>
-</html>
+      const object=objectTokens
