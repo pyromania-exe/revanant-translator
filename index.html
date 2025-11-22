@@ -36,11 +36,9 @@
   </div>
 
   <script>
-    // Pronoun maps
     const pronouns = { "i":"ra","you":"vi","we":"tor","they":"zen","he":"zen","she":"zen","it":"zen" };
     const revPronouns = { "ra":"I","vi":"You","tor":"We","zen":"They" };
 
-    // Vowel maps
     const vowelMap = { a:"au", e:"ei", i:"oi", o:"ou", u:"uu" };
     const revVowelMap = { au:"a", ei:"e", oi:"i", ou:"o", uu:"u" };
 
@@ -63,7 +61,6 @@
       return w;
     }
 
-    // Smarter normalization heuristics
     function normalizeWord(w) {
       // reverse diphthongs
       Object.entries(revVowelMap).forEach(([k,v])=>{
@@ -82,7 +79,11 @@
       // remove stray "of" fragments
       w=w.replace(/\bof\b/g,"");
 
-      // heuristic fixes for common words
+      // heuristic fixes
+      if(/^va-?ois$/.test(w)) w="is";          // fix "va-ois" → "is"
+      if(w==="iste" || w==="thei") w="the";    // fix "iste"/"thei" → "the"
+      if(/khperior/.test(w)) w="superior";     // fix "khperior" → "superior"
+      if(w==="sus") w="is";                    // fix "sus" → "is"
       if(w==="beter") w="better";
       if(w==="wourk" || w==="wor") w="work";
       if(w==="suck" || w==="suck s") w="sucks";
