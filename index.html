@@ -78,7 +78,17 @@
       "skhbeia:kh":"will be",
       "reimauogrin":"remain",
       "augouny":"agony",
-      "pauoin":"pain"
+      "pauoin":"pain",
+      "grreitaakh":"great",
+      "grreitei":"great",
+      "grreittorr":"great",
+      "grreita":"great",
+      "glarri":"glory",
+      "honorr":"honor",
+      "essi":"use",
+      "munn":"man",
+      "diud":"dead",
+      "faals":"fools"
     };
 
     function scrambleWord(word) {
@@ -129,9 +139,3 @@
       const words=line.split(/\s+/);
       if(words.length<3) return words.map(descrambleWord).join(" ");
       const objectTokens=words.slice(0,words.length-2);
-      let verbToken=words[words.length-2];
-      let subjectToken=words[words.length-1];
-      let subject=revPronouns[subjectToken]||descrambleWord(subjectToken);
-      let verb=verbToken.replace(/^va-/,"").replace(/^x-/,"").replace(/eth$/,"");
-      verb=descrambleWord(verb);
-      const object=objectTokens
