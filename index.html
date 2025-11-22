@@ -31,29 +31,39 @@
 
   <!-- Rules/info section -->
   <div class="section">
-    <h2>Revanant Code – Rules (Updated)</h2>
-    <p>OVS word order, pronoun mapping, tense markers, negation, scrambling with diphthongs, clusters, guttural endings, and symbol injection. Overrides ensure lore words decode correctly.</p>
+    <h2>Revanant Code – Rules</h2>
+    <h3>Word Order</h3>
+    <ul><li>OVS (Object–Verb–Subject). Example: <code>Book read I</code>.</li></ul>
+    <h3>Pronouns</h3>
+    <ul><li><code>ra</code> → I</li><li><code>vi</code> → You</li><li><code>tor</code> → We</li><li><code>zen</code> → They / He / She / It</li></ul>
+    <h3>Tense & Negation</h3>
+    <ul><li>Past tense: suffix <code>-ethr</code></li><li>Future tense: prefix <code>va-</code></li><li>Negation: prefix <code>x-</code></li></ul>
+    <h3>Scrambling</h3>
+    <ul>
+      <li>Vowels mutate into diphthongs: <code>a→au</code>, <code>e→ei</code>, <code>i→oi</code>, <code>o→ou</code>, <code>u→uu</code>.</li>
+      <li>Random consonant clusters fracture words: <code>kr</code>, <code>gr</code>, <code>zt</code>, <code>skh</code>.</li>
+      <li>Extra guttural endings may be appended: <code>-akh</code>, <code>-orr</code>, <code>-ethr</code>, <code>-tei:d</code>.</li>
+      <li>Symbols (<code>¤</code>, <code>~</code>, <code>:</code>) can appear inside words as disruptions.</li>
+    </ul>
+    <h3>Pluralization</h3>
+    <ul><li>Double the first consonant of the noun. Example: <code>dog</code> → <code>ddog</code>.</li></ul>
+    <h3>Markers</h3>
+    <ul><li><code>¤</code> → sentence divider</li><li><code>~</code> → emphasis</li><li><code>:</code> → possession</li><li><code>//</code> → uncertainty</li></ul>
+    <h3>Style Notes</h3>
+    <p>Revanant Code thrives on distortion. Expect diphthongs, jagged consonant clusters, guttural endings, and symbol injections. It is cryptic yet speakable, resembling an encrypted chant.</p>
   </div>
 
   <script>
+    // Pronoun maps
     const pronouns = { "i":"ra","you":"vi","we":"tor","they":"zen","he":"zen","she":"zen","it":"zen" };
     const revPronouns = { "ra":"I","vi":"You","tor":"We","zen":"They" };
 
+    // Vowel maps
     const vowelMap = { a:"au", e:"ei", i:"oi", o:"ou", u:"uu" };
     const revVowelMap = { au:"a", ei:"e", oi:"i", ou:"o", uu:"u" };
 
     const clusters = ["kr","gr","zt","skh"];
     const endings = ["akh","orr","ethr","tei:d"];
-
-    const overrides = {
-      "trougrmeintei:d":"tormented",
-      "skhbeia:kh":"will be",
-      "reimauogrin":"remain",
-      "augouny":"agony",
-      "pauoin":"pain",
-      "grreitaakh":"great","grreitei":"great","grreittorr":"great","grreita":"great",
-      "glarri":"glory","honorr":"honor","essi":"use","munn":"man","diud":"dead","faals":"fools"
-    };
 
     function scrambleWord(word) {
       let w = word.toLowerCase();
@@ -72,14 +82,16 @@
     }
 
     function descrambleWord(word) {
-      let w = word;
-      if(overrides[w]) return overrides[w];
-      clusters.forEach(c=>{ w=w.replace(new RegExp(c,"g"),""); });
-      endings.forEach(e=>{ w=w.replace(new RegExp(e+"$"),""); });
-      w=w.replace(/[¤~:]/g,"");
+      let w = word.replace(/[¤~:]/g,"");
+      // reverse diphthongs
       Object.entries(revVowelMap).forEach(([k,v])=>{
         w=w.replace(new RegExp(k,"g"),v);
       });
+      // strip clusters
+      clusters.forEach(c=>{ w=w.replace(new RegExp(c,"g"),""); });
+      // strip endings
+      endings.forEach(e=>{ w=w.replace(new RegExp(e+"$"),""); });
+      // collapse doubled consonants
       w=w.replace(/([bcdfghjklmnpqrstvwxyz])\1+/g,"$1");
       return w;
     }
@@ -91,7 +103,7 @@
       if(pronouns[subject]) subject=pronouns[subject];
       verb=scrambleWord(verb);
       object=object.split(" ").map(scrambleWord).join(" ");
-      if(Math.random()>0.5) verb="va-"+verb; else verb=verb+"eth";
+      if(Math.random()>0.5) verb="va-"+verb; else verb=verb+"ethr";
       if(Math.random()>0.6) verb="x-"+verb;
       const markers=["¤","~","//"];
       const marker=markers[Math.floor(Math.random()*markers.length)];
@@ -106,7 +118,7 @@
       let verbToken=words[words.length-2];
       let subjectToken=words[words.length-1];
       let subject=revPronouns[subjectToken]||descrambleWord(subjectToken);
-      let verb=verbToken.replace(/^va-/,"").replace(/^x-/,"").replace(/eth$/,"");
+      let verb=verbToken.replace(/^va-/,"").replace(/^x-/,"").replace(/ethr$/,"");
       verb=descrambleWord(verb);
       const object=objectTokens.map(descrambleWord).join(" ");
       return `${subject} ${verb} ${object}`;
