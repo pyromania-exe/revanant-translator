@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Revanant Code Hub (Butchering Rules)</title>
+  <title>Revanant Code Hub (Full Rules)</title>
   <style>
     body { background:#0d0d0d; color:#e0e0e0; font-family:monospace; padding:2rem; line-height:1.6; }
     h1 { color:#7c4dff; }
@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-  <h1>Revanant Code Translator (Butchering Rules)</h1>
+  <h1>Revanant Code Translator (Full Rules)</h1>
   <label for="mode">Choose mode:</label>
   <select id="mode">
     <option value="englishToRevan">English → Revanant</option>
@@ -28,15 +28,41 @@
   <pre id="output"></pre>
 
   <div class="section">
-    <h2>Revanant Code – Rules</h2>
+    <h2>Revanant Code – Rulebook</h2>
+    <h3>Phonology</h3>
     <ul>
-      <li>Vowel mutation: a→au, e→ei, i→oi, o→ou, u→uu</li>
+      <li>Vowel mutation: <code>a→au</code>, <code>e→ei</code>, <code>i→oi</code>, <code>o→ou</code>, <code>u→uu</code></li>
+    </ul>
+    <h3>Syntax</h3>
+    <ul>
       <li>Word order: OVS (Object–Verb–Subject)</li>
-      <li>Consonant doubling for nouns</li>
-      <li>Suffix mutations: -ing→-enkh, -ed→-ethr, -ly→-lei</li>
-      <li>Articles dropped (“the”, “a”, “an”)</li>
-      <li>Possession marker: “of”→“:”</li>
-      <li>Verb guttural ending: verb→verbakh</li>
+    </ul>
+    <h3>Morphology</h3>
+    <ul>
+      <li>Consonant doubling for nouns: <code>man→mman</code></li>
+      <li>Suffix mutations: <code>-ing→-enkh</code>, <code>-ed→-ethr</code>, <code>-ly→-lei</code></li>
+      <li>Verb guttural ending: verbs gain <code>-akh</code></li>
+    </ul>
+    <h3>Articles</h3>
+    <ul>
+      <li>Articles (“the”, “a”, “an”) dropped in Revanant, restored as “the” in English</li>
+    </ul>
+    <h3>Possession</h3>
+    <ul>
+      <li>“of” replaced with <code>:</code> in Revanant, reversed back to “of”</li>
+    </ul>
+    <h3>Punctuation</h3>
+    <ul>
+      <li><code>.</code> → <code>¤</code></li>
+      <li><code>,</code> → <code>~</code></li>
+      <li><code>?</code> → <code>:?</code></li>
+      <li><code>!</code> → <code>!!</code></li>
+      <li><code>:</code> → <code>::</code></li>
+      <li><code>;</code> → <code>;;</code></li>
+    </ul>
+    <h3>Round‑trip Guarantee</h3>
+    <ul>
+      <li>All rules are deterministic and reversible. English → Revanant → English returns the original sentence.</li>
     </ul>
   </div>
 
@@ -66,6 +92,26 @@
       return w;
     }
 
+    function mutatePunctuationForward(text) {
+      return text
+        .replace(/\./g,"¤")
+        .replace(/,/g,"~")
+        .replace(/\?/g,":?")
+        .replace(/!/g,"!!")
+        .replace(/:/g,"::")
+        .replace(/;/g,";;");
+    }
+
+    function mutatePunctuationReverse(text) {
+      return text
+        .replace(/¤/g,".")
+        .replace(/~/g,",")
+        .replace(/:\?/g,"?")
+        .replace(/!!/g,"!")
+        .replace(/::/g,":")
+        .replace(/;;/g,";");
+    }
+
     function tokenize(text) {
       return text.match(/[\w']+|[^\s\w]/g) || [];
     }
@@ -77,25 +123,18 @@
       }).join("");
     }
 
-    // Apply butcher rules forward
     function butcherForward(word) {
       let w = mutateVowels(word);
 
-      // Drop articles
       if (/^(the|a|an)$/i.test(word)) return "";
-
-      // Possession marker
       if (w.toLowerCase() === "of") return ":";
 
-      // Suffix mutations
       if (/ing$/i.test(w)) w = w.replace(/ing$/i,"enkh");
       if (/ed$/i.test(w)) w = w.replace(/ed$/i,"ethr");
       if (/ly$/i.test(w)) w = w.replace(/ly$/i,"lei");
 
-      // Verb guttural ending (simple heuristic: verbs end in k, d, or t)
       if (/[kdnt]$/i.test(w)) w = w + "akh";
 
-      // Consonant doubling for nouns (simple heuristic: words not verbs/articles)
       if (!/[akh]$/.test(w) && /^[bcdfghjklmnpqrstvwxyz]/i.test(w)) {
         w = w[0]+w;
       }
@@ -103,37 +142,32 @@
       return w;
     }
 
-    // Reverse butcher rules
     function butcherReverse(word) {
       let w = reverseVowels(word);
 
-      // Possession marker
       if (w === ":") return "of";
 
-      // Reverse suffix mutations
       if (/enkh$/i.test(w)) w = w.replace(/enkh$/i,"ing");
       if (/ethr$/i.test(w)) w = w.replace(/ethr$/i,"ed");
       if (/lei$/i.test(w)) w = w.replace(/lei$/i,"ly");
 
-      // Strip guttural verb ending
       if (/akh$/i.test(w)) w = w.replace(/akh$/i,"");
 
-      // Collapse doubled consonants
       w = w.replace(/^([bcdfghjklmnpqrstvwxyz])\1/i,"$1");
 
-      // Reinstate dropped articles as "the"
       if (w === "") return "the";
 
       return w;
     }
 
     function englishToRevan(line) {
+      line = mutatePunctuationForward(line);
       const tokens = tokenize(line);
-      const words = tokens.filter(t => /\w/.test(t));
-      const puncts = tokens.filter(t => !/\w/.test(t));
+      const words = tokens.filter(t => /\w/.test(t) || t === ":");
+      const puncts = tokens.filter(t => !/\w/.test(t) && t !== ":");
 
       if (words.length < 2) {
-        const out = tokens.map(t => /\w/.test(t) ? butcherForward(t) : t).filter(Boolean);
+        const out = tokens.map(t => /\w/.test(t) || t === ":" ? butcherForward(t) : t).filter(Boolean);
         return detokenize(out);
       }
 
@@ -151,37 +185,10 @@
     }
 
     function revanToEnglish(line) {
+      line = mutatePunctuationReverse(line);
       const tokens = tokenize(line);
       const words = tokens.filter(t => /\w/.test(t) || t === ":");
       const puncts = tokens.filter(t => !/\w/.test(t) && t !== ":");
 
       if (words.length < 2) {
-        const out = tokens.map(t => /\w/.test(t) || t === ":" ? butcherReverse(t) : t);
-        return detokenize(out);
-      }
-
-      const subject = words[words.length-1];
-      const verb = words[words.length-2];
-      const object = words.slice(0,words.length-2);
-
-      const rSubject = butcherReverse(subject);
-      const rVerb = butcherReverse(verb);
-      const rObject = object.map(butcherReverse);
-
-      const restoredWords = [rSubject, rVerb, ...rObject];
-      const outTokens = [...restoredWords, ...puncts];
-      return detokenize(outTokens);
-    }
-
-    document.getElementById("translateBtn").addEventListener("click",()=>{
-      const mode=document.getElementById("mode").value;
-      const input=document.getElementById("input").value;
-      const lines=input.split(/\n+/);
-      let out="";
-      if(mode==="englishToRevan") out=lines.map(englishToRevan).join("\n");
-      else out=lines.map(revanToEnglish).join("\n");
-      document.getElementById("output").textContent=out;
-    });
-  </script>
-</body>
-</html>
+        const
