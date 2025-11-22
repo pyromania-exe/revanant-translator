@@ -32,7 +32,7 @@
   <!-- Rules/info section -->
   <div class="section">
     <h2>Revanant Code – Rules</h2>
-    <p>OVS word order, pronoun mapping, tense markers, negation, scrambling with diphthongs, clusters, guttural endings, and symbol injection. Normalization rules ensure words translate back consistently.</p>
+    <p>OVS word order, pronoun mapping, tense markers, negation, scrambling with diphthongs, clusters, guttural endings, and symbol injection. The reverse translator now directly undoes these transformations.</p>
   </div>
 
   <script>
@@ -61,44 +61,36 @@
       return w;
     }
 
-    function normalizeWord(w) {
-      // reverse diphthongs
-      Object.entries(revVowelMap).forEach(([k,v])=>{
-        w=w.replace(new RegExp(k,"g"),v);
+    // Reverse translator: exact inverse of scrambleWord
+    function descrambleWord(word) {
+      let w = word;
+
+      // 1. Remove symbols
+      w = w.replace(/[¤~:]/g,"");
+
+      // 2. Strip tense markers
+      w = w.replace(/^va-/, "");
+      w = w.replace(/^x-/, "");
+      w = w.replace(/ethr$/, "");
+
+      // 3. Remove guttural endings
+      endings.forEach(e => {
+        w = w.replace(new RegExp(e+"$"), "");
       });
 
-      // strip clusters
-      clusters.forEach(c=>{ w=w.replace(new RegExp(c,"g"),""); });
+      // 4. Remove clusters
+      clusters.forEach(c => {
+        w = w.replace(new RegExp(c,"g"), "");
+      });
 
-      // strip endings
-      endings.forEach(e=>{ w=w.replace(new RegExp(e+"$"),""); });
+      // 5. Reverse diphthongs
+      Object.entries(revVowelMap).forEach(([k,v])=>{
+        w = w.replace(new RegExp(k,"g"), v);
+      });
 
-      // collapse doubled consonants
-      w=w.replace(/([bcdfghjklmnpqrstvwxyz])\1+/g,"$1");
+      // Collapse doubled consonants
+      w = w.replace(/([bcdfghjklmnpqrstvwxyz])\1+/g,"$1");
 
-      // remove stray "of" fragments
-      w=w.replace(/\bof\b/g,"");
-
-      // heuristic fixes
-      if(/^va-?ois$/.test(w)) w="is";          // fix "va-ois" → "is"
-      if(w==="iste" || w==="thei") w="the";    // fix "iste"/"thei" → "the"
-      if(/khperior/.test(w)) w="superior";     // fix "khperior" → "superior"
-      if(w==="sus") w="is";                    // fix "sus" → "is"
-      if(w==="beter") w="better";
-      if(w==="wourk" || w==="wor") w="work";
-      if(w==="suck" || w==="suck s") w="sucks";
-      if(w==="copiliot") w="copilot";
-      if(w==="wil") w="will";
-      if(w==="fal") w="fall";
-      if(w==="ous") w="our";
-      if(w==="khur") w="your";
-
-      return w;
-    }
-
-    function descrambleWord(word) {
-      let w = word.replace(/[¤~:]/g,"");
-      w = normalizeWord(w);
       return w;
     }
 
@@ -124,8 +116,7 @@
       let verbToken=words[words.length-2];
       let subjectToken=words[words.length-1];
       let subject=revPronouns[subjectToken]||descrambleWord(subjectToken);
-      let verb=verbToken.replace(/^va-/,"").replace(/^x-/,"").replace(/ethr$/,"");
-      verb=descrambleWord(verb);
+      let verb=descrambleWord(verbToken);
       const object=objectTokens.map(descrambleWord).join(" ");
       return `${subject} ${verb} ${object}`;
     }
